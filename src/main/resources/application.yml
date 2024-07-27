@@ -1,1 +1,6 @@
-
+app:
+   moex:
+    endpoint: https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/.json?iss.meta=off&iss.only=securities&iss.json=extended
+   ethereum:
+     api.key.token: "169MTZVIB3WJ2JH3U1KDMX6R65NGGVGGHY"
+     usdt.contract.address: "0xdac17f958d2ee523a2206206994597c13d831ec7"

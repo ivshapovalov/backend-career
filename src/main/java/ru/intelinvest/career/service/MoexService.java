@@ -16,13 +16,19 @@
 
 package ru.intelinvest.career.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.intelinvest.career.exception.RemoteApiException;
 import ru.intelinvest.career.models.Stock;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +36,27 @@ public class MoexService {
 
     private final RestTemplate restTemplate;
 
+    private final ObjectMapper objectMapper;
+
+    @Value("${app.moex.endpoint}")
+    private String moexUrl;
+
     public List<Stock> getStocks() {
-        // todo реализация задания № 1 здесь
-        return Collections.emptyList();
+
+        try {
+            ResponseEntity<Object> response = restTemplate.getForEntity(moexUrl, Object.class);
+            return extractStocksFromResponse(response);
+        } catch (Exception e) {
+            throw new RemoteApiException(e.getMessage());
+        }
+    }
+
+    private List<Stock> extractStocksFromResponse(ResponseEntity<Object> response) {
+        Object body = response.getBody();
+        List<LinkedHashMap> stocksProperties = (List) ((LinkedHashMap) ((ArrayList<?>) body).get(1)).get("securities");
+        return stocksProperties.stream()
+                .map(stockProperties
+                        -> objectMapper.convertValue(stockProperties, Stock.class))
+                .collect(Collectors.toList());
     }
 }

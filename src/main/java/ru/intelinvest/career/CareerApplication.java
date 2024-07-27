@@ -24,8 +24,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 public class CareerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CareerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CareerApplication.class, args);
+    }
 
 }
